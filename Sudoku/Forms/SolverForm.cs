@@ -7,6 +7,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Sudoku.Forms
@@ -123,7 +124,12 @@ namespace Sudoku.Forms
                 Solver.TileUpdated += OnTileUpdated;
             }
 
-            Solver.Solve(Puzzle);
+            // Disable GUI while puzzle solves
+            btnLoad.Enabled = false;
+            btnSolve.Enabled = false;
+            btnReset.Enabled = false;
+
+            Solver.Delay(speedTrack.Value).Solve(Puzzle);
         }
 
         /// <summary>
@@ -134,6 +140,12 @@ namespace Sudoku.Forms
         private void OnPuzzleSolved(object sender, PuzzleSolvedEventArgs e)
         {
             UpdateAllTextBoxes();
+
+            // Enable GUI after puzzle solves
+            btnLoad.Enabled = true;
+            btnSolve.Enabled = true;
+            btnReset.Enabled = true;
+
             MessageBox.Show("Puzzle has been successfully solved.", "Puzzle Solved", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -145,6 +157,17 @@ namespace Sudoku.Forms
         /// <param name="e"></param>
         private void OnTileUpdated(object sender, TileUpdatedEventArgs e)
         {
+            var textBoxName = TextBoxNameFromTile(e.Tile);
+            var textBox = TileBoxes.FirstOrDefault(t => t.Name == textBoxName);
+
+            // Change the color of the text box briefly to show it has just been updated.
+            Task.Run(async () =>
+            {
+                textBox.BackColor = Color.LightGreen;
+                await Task.Delay(100);
+                textBox.BackColor = Color.White;
+            });
+
             UpdateTextBoxForTile(e.Tile);
         }
 
@@ -192,6 +215,19 @@ namespace Sudoku.Forms
             if (result == DialogResult.Yes)
             {
                 TileBoxes.ForEach(t => t.Text = string.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Updates the speed of the solver in real time.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void speedTrack_Scroll(object sender, EventArgs e)
+        {
+            if (Solver != null)
+            {
+                Solver.Delay(speedTrack.Value);
             }
         }
     }

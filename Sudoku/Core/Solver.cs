@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Sudoku.Core
 {
@@ -23,21 +24,40 @@ namespace Sudoku.Core
         public event EventHandler<TileUpdatedEventArgs> TileUpdated;
 
         /// <summary>
+        /// The number of milliseconds delay inbetween each tile being solved.
+        /// </summary>
+        private int WaitFor;
+
+        /// <summary>
         /// Solves the provided puzzle.
         /// </summary>
         /// <param name="puzzle"></param>
         public void Solve(Puzzle puzzle)
         {
             this.Puzzle = puzzle;
-            
-            // Start the recursive solving from the first cell
-            PerformSolve(0, 0);
 
-            // Once this finishes, if the puzzle is solved then fire off the event.
-            if (IsPuzzleSolved())
+            // Start the recursive solving from the first cell
+            Task.Run(async () =>
             {
-                PuzzleSolved?.Invoke(this, new PuzzleSolvedEventArgs { Puzzle = Puzzle });
-            }
+                await PerformSolve(0, 0);
+
+                // Once this finishes, if the puzzle is solved then fire off the event.
+                if (IsPuzzleSolved())
+                {
+                    PuzzleSolved?.Invoke(this, new PuzzleSolvedEventArgs { Puzzle = Puzzle });
+                }
+            });
+        }
+
+        /// <summary>
+        /// Sets the number of milliseconds to wait for inbetween each tile being solved.
+        /// </summary>
+        /// <param name="milliseconds"></param>
+        /// <returns></returns>
+        public Solver Delay(int milliseconds)
+        {
+            WaitFor = milliseconds;
+            return this;
         }
 
         /// <summary>
@@ -105,15 +125,15 @@ namespace Sudoku.Core
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns></returns>
-        private bool NextSolve(int row, int col)
+        private async Task<bool> NextSolve(int row, int col)
         {
             if (col >= Puzzle.Height - 1)
             {
-                return PerformSolve(row + 1, 0);
+                return await PerformSolve(row + 1, 0);
             }
             else
             {
-                return PerformSolve(row, col + 1);
+                return await PerformSolve(row, col + 1);
             }
         }
 
@@ -123,7 +143,7 @@ namespace Sudoku.Core
         /// <param name="row"></param>
         /// <param name="col"></param>
         /// <returns></returns>
-        private bool PerformSolve(int row, int col)
+        private async Task<bool> PerformSolve(int row, int col)
         {
             if (IsPuzzleSolved())
             {
@@ -133,7 +153,7 @@ namespace Sudoku.Core
             else if (Puzzle.Tiles[row, col].Value != 0)
             {
                 // Tile is already solved - proceed to next
-                return NextSolve(row, col);
+                return await NextSolve(row, col);
             }
             else
             {
@@ -146,8 +166,14 @@ namespace Sudoku.Core
                         // Set the tile value and attempt to recursively solve the rest of the board.
                         Puzzle.Tiles[row, col].Value = value;
                         TileUpdated?.Invoke(this, new TileUpdatedEventArgs { Tile = Puzzle.Tiles[row, col] });
+                        
+                        // Intentional delay inbetween solving each tile
+                        if (WaitFor > 0)
+                        {
+                            await Task.Delay(WaitFor);
+                        }
 
-                        if (NextSolve(row, col))
+                        if (await NextSolve(row, col))
                         {
                             return true;
                         }

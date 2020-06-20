@@ -29,16 +29,25 @@
         private void InitializeComponent()
         {
             this.groupOptions = new System.Windows.Forms.GroupBox();
+            this.lblDelay = new System.Windows.Forms.Label();
+            this.speedTrack = new System.Windows.Forms.TrackBar();
+            this.btnReset = new System.Windows.Forms.Button();
             this.btnSolve = new System.Windows.Forms.Button();
             this.lblDefault = new System.Windows.Forms.Label();
             this.btnLoad = new System.Windows.Forms.Button();
             this.comboDefault = new System.Windows.Forms.ComboBox();
-            this.btnReset = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speedTrack)).BeginInit();
             this.SuspendLayout();
             // 
             // groupOptions
             // 
+            this.groupOptions.Controls.Add(this.label2);
+            this.groupOptions.Controls.Add(this.label1);
+            this.groupOptions.Controls.Add(this.lblDelay);
+            this.groupOptions.Controls.Add(this.speedTrack);
             this.groupOptions.Controls.Add(this.btnReset);
             this.groupOptions.Controls.Add(this.btnSolve);
             this.groupOptions.Controls.Add(this.lblDefault);
@@ -50,6 +59,36 @@
             this.groupOptions.TabIndex = 2;
             this.groupOptions.TabStop = false;
             this.groupOptions.Text = "Options";
+            // 
+            // lblDelay
+            // 
+            this.lblDelay.AutoSize = true;
+            this.lblDelay.Location = new System.Drawing.Point(12, 285);
+            this.lblDelay.Name = "lblDelay";
+            this.lblDelay.Size = new System.Drawing.Size(144, 15);
+            this.lblDelay.TabIndex = 6;
+            this.lblDelay.Text = "Solve Delay (milliseconds)";
+            // 
+            // speedTrack
+            // 
+            this.speedTrack.Location = new System.Drawing.Point(13, 303);
+            this.speedTrack.Maximum = 1000;
+            this.speedTrack.Name = "speedTrack";
+            this.speedTrack.Size = new System.Drawing.Size(266, 45);
+            this.speedTrack.TabIndex = 5;
+            this.speedTrack.TickFrequency = 100;
+            this.speedTrack.Value = 200;
+            this.speedTrack.Scroll += new System.EventHandler(this.speedTrack_Scroll);
+            // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(169, 368);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(136, 35);
+            this.btnReset.TabIndex = 4;
+            this.btnReset.Text = "Reset Puzzle";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // btnSolve
             // 
@@ -92,15 +131,23 @@
             this.comboDefault.Size = new System.Drawing.Size(121, 23);
             this.comboDefault.TabIndex = 0;
             // 
-            // btnReset
+            // label1
             // 
-            this.btnReset.Location = new System.Drawing.Point(169, 368);
-            this.btnReset.Name = "btnReset";
-            this.btnReset.Size = new System.Drawing.Size(136, 35);
-            this.btnReset.TabIndex = 4;
-            this.btnReset.Text = "Reset Puzzle";
-            this.btnReset.UseVisualStyleBackColor = true;
-            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 307);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(13, 15);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "0";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(276, 308);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(34, 15);
+            this.label2.TabIndex = 8;
+            this.label2.Text = "1,000";
             // 
             // SolverForm
             // 
@@ -112,6 +159,7 @@
             this.Text = "Sudoku Solver";
             this.groupOptions.ResumeLayout(false);
             this.groupOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.speedTrack)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -124,5 +172,9 @@
         private System.Windows.Forms.ComboBox comboDefault;
         private System.Windows.Forms.Button btnSolve;
         private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.Label lblDelay;
+        public System.Windows.Forms.TrackBar speedTrack;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
     }
 }
