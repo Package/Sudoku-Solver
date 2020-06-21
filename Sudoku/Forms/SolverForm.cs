@@ -14,10 +14,24 @@ namespace Sudoku.Forms
 {
     public partial class SolverForm : Form
     {
+        /// <summary>
+        /// The text boxes used in the GUI to represent the puzzle.
+        /// </summary>
         public List<TextBox> TileBoxes { get; set; }
+
+        /// <summary>
+        /// An instance of the solver used to solve the puzzles.
+        /// </summary>
         public Solver Solver { get; set; }
+        
+        /// <summary>
+        /// The puzzle to solve
+        /// </summary>
         public Puzzle Puzzle { get; set; }
 
+        /// <summary>
+        /// Construct a new SolverForm
+        /// </summary>
         public SolverForm()
         {
             InitializeComponent();

@@ -8,9 +8,19 @@ namespace Sudoku.Core
 {
     public class Puzzle
     {
+        /// <summary>
+        /// The tiles in the puzzle.
+        /// </summary>
         public Tile[,] Tiles { get; set; }
 
+        /// <summary>
+        /// Number of columns in the sudoku puzzle
+        /// </summary>
         public const int Width = 9;
+
+        /// <summary>
+        /// Number of rows in the sudoku puzzle
+        /// </summary>
         public const int Height = 9;
 
         /// <summary>
